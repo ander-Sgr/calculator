@@ -1,5 +1,6 @@
-let display = document.getElementById("result-screen");
-let operator;
-function displayNumber(){
-    
+const input = document.getElementById("result-screen");
+const numbers = document.querySelectorAll(".number-button");
+
+function inputNumber(numbers, input){
+
 }
