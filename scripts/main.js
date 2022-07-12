@@ -24,8 +24,8 @@ function maxLength(resultScreen) {
         arrFull = false;
     }
     return arrFull;
+    
 }
-
 
 function run() {
     let resultScreen = document.getElementById('result-label');
