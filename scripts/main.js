@@ -24,7 +24,7 @@ function maxLength(resultScreen) {
         arrFull = false;
     }
     return arrFull;
-    
+   
 }
 
 function run() {

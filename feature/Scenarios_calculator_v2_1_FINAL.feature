@@ -9,7 +9,7 @@ Then in the display screen should be show a 0
 Scenario Outline: Clicking non-operators screen buttons
 Given in the display screen the number <numberOnScreen> is shown
 When the user press the <Button> button
-Then in the display screen should be show a <Button>
+Then in the display screen should be show a <resultDisplay>
 
 Examples:
 |numberOnScreen|Button| resultDisplay |
@@ -28,20 +28,29 @@ Examples:
 |             1| +/-  |           -1  |
 
 Scenario Outline: Clicking operators screen buttons
-When the user press the <Button> button
-Then the <Button> button should be highlighted
+When the user press the <button> button
+Then just the operator <button> button should be highlighted 
 
 Examples:
-|Button|
+|button|
 |   +  |
 |   -  |
 |   /  |
 |   *  |
 
+Scenario Outline: Unhighlighting operators screen buttons
+When the user press the <button> button
+Then all the operators buttons should be unhighlighted
+
+Examples:
+|button|
+|   =  |
+|   C  |
+
 Scenario Outline: Pressing non-operators keys
 Given in the display screen the number <numberOnScreen> is shown
 When the user press the <Key> key
-Then in the display screen should be show a <Button>
+Then in the display screen should be show a <resultDisplay>
 
 Examples:
 |numberOnScreen|Key   | resultDisplay |
