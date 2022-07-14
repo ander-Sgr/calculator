@@ -1,47 +1,65 @@
+let storeValues = [];
+let firstNumber = "";
+let secondNumber = "";
+let operator;
+const resultScreen = document.getElementById('result-label');
+const numbersButtons = document.getElementsByClassName('number-button');
+const clearButton = document.getElementById('clear-button');
+const plusMinBtn = document.getElementById('plus-minus-button').textContent;
+const commaButton = document.getElementById('comma-button');
+const operatorButtons = document.getElementsByClassName('operator-button');
 
-function inputNumbers(numbersButton, resultScreen) {
-    for (let i = 0; i < numbersButton.length; i++) {
-        numbersButton[i].addEventListener("click",  function() {
-            let buttonValue = this.textContent;
-            resultScreen.value = resultScreen.value + buttonValue;
-        });
-    }
-}
-
-function clearDisplay(clearButton, resultScreen) {
-    clearButton.addEventListener("click", () => {
-        if (clearButton.textContent === "C") {
-            resultScreen.value = "";
-        }
+Array.from(numbersButtons).forEach(btn => {
+    btn.addEventListener('click', () => {
+        inputNumber(btn.textContent);
+        inputComma(btn.textContent);
     });
-}
 
-function maxLength(resultScreen) {
-    const maxElements = 9;
-    let arrFull = true
+});
 
-    if (maxElements <= resultScreen.length) {
-        arrFull = false;
+Array.from(operatorButtons).forEach(op => {
+    op.addEventListener('click', () => {
+        inputOperator(op.textContent);
+    })
+});
+
+/*
+clearButton.addEventListener("click", () => {
+    if (clearButton.textContent === "C") {
+        resultScreen.innerHTML = "0";
+        commaButton.disabled = false;
     }
-    return arrFull;
-    
+});*/
+
+function inputNumber(digit) {
+    if (resultScreen.textContent === '0' && digit !== ',') {
+        resultScreen.textContent = digit;
+    } else {
+        resultScreen.textContent += digit;
+    }
+
 }
 
-function run() {
-    let resultScreen = document.getElementById('result-label');
-    let numbersButton = document.getElementsByClassName('number-button');
-    let clearButton = document.getElementById('clear-button');
-
-    inputNumbers(numbersButton, resultScreen)
-
-    clearDisplay(clearButton, resultScreen);
-
-
-    for (let i = 0; i < numbersButton.length; i++) {
-        console.log(numbersButton[i]);
+function inputComma(digit) {
+    digit = ','
+    if (resultScreen.textContent.includes(digit)) {
+        commaButton.disabled = true;
     }
 }
 
-
-run();
-
+function inputOperator(operator) {
+    switch (operator) {
+        case 'C':
+            resultScreen.innerHTML = "0";
+            commaButton.disabled = false;
+            break;
+        case pl():
+            resultScreen.innerHTML += operator;
+            break;
+        default:
+            break;
+    }
+}
+function pl() {
+    return plusMinBtn;
+}
