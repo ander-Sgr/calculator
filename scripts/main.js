@@ -48,33 +48,32 @@ function inputComma(digit) {
 }
 
 
-function inputPlusMinus(operator) {
-    /* if (resultScreen.textContent.includes('-')) {
-         plusMinBtn.disabled = true;
-     }*/
-    if (operator === getPlusMinus() && resultScreen.textContent !== '0') {
-        resultScreen.textContent = '-' + resultScreen.textContent;
-    } else {
-        if (resultScreen.textContent.includes('-')) {
-            console.log('si')
-        }
+function inputPlusMinus(btnOperator) {
+    let existsSign = resultScreen.textContent.includes('-');
 
+    if ((!existsSign && resultScreen.textContent !== '0' && btnOperator === '+/-')) {
+        if (resultScreen.textContent !== '0,') {
+            resultScreen.textContent = '-'.concat(resultScreen.textContent);
+        }
+    } else if (btnOperator === '+/-') {
+        resultScreen.textContent = resultScreen.textContent.replace('-', '');
     }
 }
 
-function inputOperator(operator) {
+function inputOperator(btnOperator) {
 
-    switch (operator) {
+    switch (btnOperator) {
         case 'C':
-            resultScreen.textContent = "0";
+            resultScreen.textContent = '0';
             commaButton.disabled = false;
-            plusMinBtn.disabled = false;
+            firstNumber = "";
+            secondNumber = "";
             break;
-
+        case '+':
+            commaButton.disabled = false;
+            operator = btnOperator;
+            break;
         default:
             break;
     }
-}
-function getPlusMinus() {
-    return plusMinBtn.textContent;
 }
