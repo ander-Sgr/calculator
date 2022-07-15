@@ -1,21 +1,26 @@
-let storeValues = [];
-let firstNumber = "";
-let secondNumber = "";
-let operator;
-const resultScreen = document.getElementById('result-label');
-const numbersButtons = document.getElementsByClassName('number-button');
+
 const clearButton = document.getElementById('clear-button');
 const plusMinBtn = document.getElementById('plus-minus-button');
 const commaButton = document.getElementById('comma-button');
 const operatorButtons = document.getElementsByClassName('operator-button');
 
-Array.from(numbersButtons).forEach(btn => {
-    btn.addEventListener('click', () => {
-        inputNumber(btn.textContent);
-        inputComma(btn.textContent);
+let firstNumber = "";
+let secondNumber = "";
+let operator = "";
+
+const resultScreen = document.querySelector("#result-label");
+const numbersButtons = document.querySelectorAll(".number-button");
+numbersButtons.forEach(buttonNumber => {
+    buttonNumber.addEventListener('click', (event) => {
+        let newInput = event.target.textContent;
+        console.log(newInput);
+         inputComma(buttonNumber.textContent);
+         firstNumber = inputNumber(buttonNumber.textContent);    
     });
 
 });
+
+console.log(firstNumber);
 
 Array.from(operatorButtons).forEach(op => {
     op.addEventListener('click', () => {
@@ -24,19 +29,11 @@ Array.from(operatorButtons).forEach(op => {
     })
 });
 
-/*
-clearButton.addEventListener("click", () => {
-    if (clearButton.textContent === "C") {
-        resultScreen.innerHTML = "0";
-        commaButton.disabled = false;
-    }
-});*/
-
 function inputNumber(digit) {
     if (resultScreen.textContent === '0' && digit !== ',') {
-        resultScreen.textContent = digit;
+        return resultScreen.textContent = digit;
     } else {
-        resultScreen.textContent += digit;
+        return resultScreen.textContent += digit;
     }
 
 }
@@ -48,33 +45,32 @@ function inputComma(digit) {
 }
 
 
-function inputPlusMinus(operator) {
-    /* if (resultScreen.textContent.includes('-')) {
-         plusMinBtn.disabled = true;
-     }*/
-    if (operator === getPlusMinus() && resultScreen.textContent !== '0') {
-        resultScreen.textContent = '-' + resultScreen.textContent;
-    } else {
-        if (resultScreen.textContent.includes('-')) {
-            console.log('si')
-        }
+function inputPlusMinus(btnOperator) {
+    let existsSign = resultScreen.textContent.includes('-');
 
+    if ((!existsSign && resultScreen.textContent !== '0' && btnOperator === '+/-')) {
+        if (resultScreen.textContent !== '0,') {
+            resultScreen.textContent = '-'.concat(resultScreen.textContent);
+        }
+    } else if (btnOperator === '+/-') {
+        resultScreen.textContent = resultScreen.textContent.replace('-', '');
     }
 }
 
-function inputOperator(operator) {
+function inputOperator(btnOperator) {
 
-    switch (operator) {
+    switch (btnOperator) {
         case 'C':
-            resultScreen.textContent = "0";
+            resultScreen.textContent = '0';
             commaButton.disabled = false;
-            plusMinBtn.disabled = false;
+            firstNumber = "";
+            secondNumber = "";
             break;
-
+        case '+':
+            commaButton.disabled = false;
+            operator = btnOperator;
+            break;
         default:
             break;
     }
-}
-function getPlusMinus() {
-    return plusMinBtn.textContent;
 }
