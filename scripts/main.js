@@ -3,14 +3,34 @@ let firstNumber = "";
 let secondNumber = "";
 let operator = "";
 
-const numbers = document.querySelectorAll('button');
 const resultScreen = document.getElementById('result-label');
+const numbers = document.querySelectorAll('button');
 const operators = document.querySelectorAll('.operator-button');
+const clearButton = document.getElementById('clear-button').value;
+const plusMinButton = document.getElementById('plus-minus-button').value;
 
 function updateDisplay() {
     resultScreen.textContent = displayValue;
-
 }
+
+operators.forEach((opBtn) => {
+    opBtn.addEventListener('click', (elEvent) => {
+        let operatorPress = elEvent.target.value;
+        switch (operatorPress) {
+            case plusMinButton:
+                inputPlusMinus(displayValue);
+                break;
+            case clearButton:
+                resetCalculator();
+                break;
+            default:
+                break;
+        }
+        inputOperator(operatorPress);
+
+        console.log(operatorPress);
+    });
+});
 
 function numbersButtons() {
     for (let i = 0; i < numbers.length; i++) {
@@ -25,42 +45,28 @@ function numbersButtons() {
     }
 }
 
-function operatorsButtons() {
-    for (let i = 0; i < operators.length; i++) {
-        operators[i].addEventListener('click', function () {
-            if (operators[i].value === 'clear') {
-                clearButton();
-
-            } else if (operators[i].value === 'plusMin') {
-                inputPlusMinus(displayValue);
-            } else {
-                inputOperator(operators[i].value);
-            }
-            //  inputOperator(operators[i].value);
-            updateDisplay();
-        });
-
-    }
-}
-
-
-
-
 function inputNumber(digit) {
     if (operator === '') {
         if (displayValue === '0') {
             displayValue = digit;
         } else {
-            displayValue += digit;
+            if (displayValue.length < 10) {
+                displayValue += digit;
+            }
+
         }
     } else {
         //second input 
         if (displayValue === firstNumber) {
             displayValue = digit;
         } else {
-            displayValue += digit;
+            if (displayValue.length < 10) {
+                displayValue += digit;
+            }
+
         }
     }
+
 
 }
 function inputComma(digit) {
@@ -73,39 +79,45 @@ function inputComma(digit) {
 
 function inputPlusMinus(number) {
     let replaceComma;
-    if (resultScreen.textContent.includes(',')) {
-        replaceComma = number.replace(',', '.');
-        replaceComma = replaceComma * -1;
-        displayValue = replaceComma.toString().replace('.', ',');
+    if (displayValue[displayValue.length - 1] == ',') {
+        replaceComma = number.slice(0, displayValue.length - 1) * -1;
+        replaceComma += ',';
+        displayValue = replaceComma;
     } else {
-        displayValue = (number * -1).toString();
+        if (resultScreen.textContent.includes(',')) {
+            replaceComma = number.replace(',', '.');
+            replaceComma = replaceComma * -1;
+            displayValue = replaceComma.toString().replace('.', ',');
+        } else {
+            displayValue = (number * -1).toString();
+        }
     }
+
 }
 
-function clearButton() {
-    displayValue = "0";
-    secondNumber = ""
-    highLightOperator('');
 
+function resetCalculator() {
+    displayValue = "0";
+    firstNumber = "";
+    secondNumber = ""
     operator = "";
 
     // resultScreen.textContent = 0;
 }
 
 function inputOperator(operatorButton) {
+    let result;
+    firstNumber = displayValue;
     if (operator !== '') {
         secondNumber = displayValue;
-        result = performingOperation(parseFloat(convertDecimal(firstNumber)), parseFloat(convertDecimal(secondNumber)), operator);
-        displayValue = result;
-        firstNumber = displayValue;
-        result = '';
 
-    } else {
-        operator = operatorButton;
-        firstNumber = displayValue;
-        highLightOperator(operatorButton)
+        result = performingOperation(Number(firstNumber), Number(secondNumber), operatorButton);
+        displayValue = result;
     }
-    highLightOperator('')
+    operator = operatorButton;
+    displayValue = firstNumber;
+
+    console.log('first', firstNumber, 'op', operator, 'second', secondNumber);
 }
 
 function performingOperation(num1, num2, opButton) {
@@ -121,14 +133,12 @@ function performingOperation(num1, num2, opButton) {
             break;
         case 'multi':
             result = num1 * num2;
-
             break;
         case 'divide':
             if (num2 === 0) {
                 return 'ERROR';
             }
             result = num1 / num2;
-
             break;
         default:
             break;
@@ -137,18 +147,6 @@ function performingOperation(num1, num2, opButton) {
     return result;
 }
 
-function highLightOperator(operator) {
-    for (let i = 0; i < operators.length; i++) {
-        if (operator !== '') {
-            operators[i].style.backgroundColor = 'red';
-        }
-      //  operators[i].style.backgroundColor = 'blue';
-
-    }
-
-}
-
-
 
 function convertDecimal(number) {
     return parseFloat(number.replace(',', '.'));
@@ -156,7 +154,7 @@ function convertDecimal(number) {
 
 function run() {
     numbersButtons();
-    operatorsButtons();
+    //operatorsButtons();
     updateDisplay();
 }
 
