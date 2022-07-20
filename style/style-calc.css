@@ -3,21 +3,18 @@
 
     grid-template-rows: 100px;
     grid-template-columns: repeat(4, 90px);
-
-    background-color: rgba(64, 72, 92, 1);
-    border-radius: 0 0 20px 25px;
     
-    position: absolute;
-
+    justify-content: center;
 }
 
 .operator-button {
     color: #EC1288;
     background-color: rgb(1, 9, 29);
     border: none;
-    border-radius: 50px;
+    border-radius: 10px;
     margin: 10px;
     font-size: 35px;
+
 }
 
 .number-button {
@@ -28,26 +25,23 @@
     filter: drop-shadow(5px 5px 5px #03032b);
 }
 
-.number-button:hover, .operator-button:hover {
-    animation: push 0.3s linear 1;
+.number-button:hover,
+.operator-button:hover {
+    background-color: rgb(12, 13, 15);
     filter: drop-shadow(10px 10px 10px #03032b);
-    border-radius: 50px;
 }
 
-@keyframes push {
-    50% {
-        transform: scale(0.8);
-    }
-}
+
 
 #result-label {
     margin-top: 0px;
+    padding-top: 10px;
     grid-column: 1/5;
     background: rgba(43, 53, 73, 1);
     border: none;
     color: white;
     text-align: right;
-    height: 95px;
+    height: 100px;
     font-size: 65px;
 }
 
@@ -55,6 +49,9 @@
     display: grid;
     grid-template-columns: repeat(4, 90px);
     grid-template-rows: 90px;
+    background-color: rgb(33, 41, 56);
+    width: 360px;
+ 
 }
 
 #clear-button {
@@ -62,7 +59,7 @@
     border-radius: 10px;
 }
 
-#equal-button {
+#button-equals {
     grid-column: 3 / 5;
     border-radius: 10px;
     color: #FFFFFF;
