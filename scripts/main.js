@@ -26,7 +26,11 @@ operators.forEach((opBtn) => {
             default:
                 break;
         }
-        inputOperator(operatorPress);
+        if (operatorPress !== plusMinButton) {
+            inputOperator(operatorPress);
+        }
+
+
 
         console.log(operatorPress);
     });
@@ -53,7 +57,6 @@ function inputNumber(digit) {
             if (displayValue.length < 10) {
                 displayValue += digit;
             }
-
         }
     } else {
         //second input 
@@ -66,6 +69,7 @@ function inputNumber(digit) {
 
         }
     }
+
 
 
 }
@@ -107,17 +111,21 @@ function resetCalculator() {
 
 function inputOperator(operatorButton) {
     let result;
-    firstNumber = displayValue;
     if (operator !== '') {
+        operator = operatorButton;
         secondNumber = displayValue;
-
-        result = performingOperation(Number(firstNumber), Number(secondNumber), operatorButton);
+        result = performingOperation(convertDecimal(firstNumber), convertDecimal(secondNumber), operatorButton);
         displayValue = result;
+        console.log(result)
+
+        firstNumber = displayValue;
+        
+
     }
     operator = operatorButton;
-    displayValue = firstNumber;
+    firstNumber = displayValue;
+    console.log('first', firstNumber, 'op', operator, 'second', secondNumber, 'result', result);
 
-    console.log('first', firstNumber, 'op', operator, 'second', secondNumber);
 }
 
 function performingOperation(num1, num2, opButton) {
@@ -149,8 +157,10 @@ function performingOperation(num1, num2, opButton) {
 
 
 function convertDecimal(number) {
+    if(resultScreen.textContent.includes('.'))return;
     return parseFloat(number.replace(',', '.'));
 }
+
 
 function run() {
     numbersButtons();
