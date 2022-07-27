@@ -1,5 +1,5 @@
 const displayScreen = document.getElementById('result-label');
-const numbers = document.querySelectorAll('.number');
+const digitsButtons = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator-button');
 const plusMinus = document.getElementById('plus-minus-button').textContent;
 
@@ -8,19 +8,17 @@ let secondNumber = null;
 let operator = null;
 let existsPreviusNumber = false;
 let textInScreen = getDisplayResult();
-let arrOperator = ['+', '-', '/', 'x', '*', '='];
+let arrOperator = ['+', '-', '/', 'x', '*', '=', 'Enter'];
 /****events****/
 
 window.addEventListener("keydown", inputKeys);
 
 function inputKeys(e) {
     e.preventDefault();
-    if (e.key >= 0 && e.key <= 9) {
-        inputNumber(e.key);
+    if (e.key >= 0 && e.key <= 9 || e.key === ',') {
+        inputDigits(e.key);
     } else if (e.key === 'Escape') {
         resetCalculator();
-    } else if (e.key === ',') {
-        inputComma(e.key);
     } else if (e.key === 'Control') {
         inputPlusMinus(displayScreen.textContent);
     } else {
@@ -28,22 +26,21 @@ function inputKeys(e) {
             if (iterator === e.key) {
                 inputOperator(e.key);
 
-                console.log(e.key, ' ', iterator)
             }
         });
     }
+    setDisplayResult(textInScreen);
+
 }
 
 function getNumbers() {
-    for (let i = 0; i < numbers.length; i++) {
-        numbers[i].addEventListener('click', function () {
-            let input = numbers[i].textContent;
-            if (input !== ',') {
-                inputNumber(numbers[i].textContent);
-            } else {
-                inputComma(input);
+    for (let i = 0; i < digitsButtons.length; i++) {
+        digitsButtons[i].addEventListener('click', function () {
+            let input = digitsButtons[i].textContent;
+            inputDigits(input);
 
-            }
+            setDisplayResult(textInScreen);
+
         });
     }
 }
@@ -53,16 +50,18 @@ function getOperators() {
         operators[i].addEventListener('click', function () {
             let input = operators[i].textContent;
             if (input === plusMinus) {
-                inputPlusMinus(displayScreen.textContent);
+                inputPlusMinus(textInScreen);
+                setDisplayResult(textInScreen);
             } else if (input === 'C') {
                 resetCalculator();
+            } else {
+                arrOperator.forEach(iterator => {
+                    if (iterator === input) {
+                        inputOperator(input);
+                    }
+                });
             }
-            arrOperator.forEach(iterator => {
-                if (iterator === input) {
-                    inputOperator(input);
-                }
-            });
-            setDisplayResult(textInScreen);
+          
         });
     }
 }
@@ -77,41 +76,77 @@ function getDisplayResult() {
 
 function setDisplayResult(input) {
     displayScreen.textContent = input;
+    if (checkLength()) {
+        displayScreen.textContent = input;
+    }
+
+
+}
+function checkLength() {
+    let canWrite;
+
+    if (textInScreen.length < 10) {
+        canWrite = true;
+    } else if (textInScreen.length < 11 && textInScreen.includes(',') && !textInScreen.includes('-')) {
+        canWrite = true;
+    } else if (textInScreen.length < 11 && !textInScreen.includes(',') && textInScreen.includes('-')) {
+        canWrite = true
+    }
+    else if (textInScreen.length < 12 && textInScreen.includes(',') && textInScreen.includes('-')) {
+        canWrite = true;
+    } else {
+        canWrite = false;
+        disablingDigits();
+    }
+
+    return canWrite;
 }
 
-function inputNumber(digit) {
 
-    if (operator !== null && secondNumber === null) {
-        textInScreen = '';
-        textInScreen += digit;
-        secondNumber = digit;
+
+function inputDigits(digit) {
+    if (operator !== null && secondNumber === null && firstNumber !== null) {
+        if (digit === ',') {
+            handleComma();
+            textInScreen = '0,';
+            secondNumber = '0,';
+        } else {
+            textInScreen = '';
+            textInScreen += digit;
+            secondNumber = digit;
+        }
     } else {
-        if (textInScreen === '0') {
+        if (digit !== ',' && textInScreen === '0') {
             textInScreen = digit;
         } else {
-            textInScreen += digit;
+            if (digit === ',') {
+                handleComma();
+            } else {
+                textInScreen += digit;
+            }
+
         }
     }
-    setDisplayResult(textInScreen);
-
 }
 
-function inputComma(comma) {
+function handleComma() {
     if (textInScreen === '0') {
-        textInScreen = '0'.concat(comma);
-    } else if (!textInScreen.includes(',')) {
-        textInScreen += comma;
+        highLightComma();
+        textInScreen = '0'.concat(',');
+    } else if (!displayScreen.textContent.includes(',')) {
+        highLightComma();
+        textInScreen += ',';
     }
-    setDisplayResult(textInScreen);
-    highLightComma(comma);
+    //setDisplayResult(textInScreen);
 }
 
-function highLightComma(comma) {
-    comma = document.getElementById('comma-button').classList.add("higLightNumbers");
+function highLightComma() {
+    document.getElementById('comma-button').classList.add("higLightNumbers");
 }
+
 
 function inputPlusMinus(number) {
-    let replaceComma;
+    let replaceComma = null;
     if (textInScreen[textInScreen.length - 1] == ',') {
         replaceComma = number.slice(0, textInScreen.length - 1) * -1;
         replaceComma += ',';
@@ -120,14 +155,14 @@ function inputPlusMinus(number) {
         replaceComma = number.replace(',', '.');
         replaceComma = replaceComma * -1;
         textInScreen = replaceComma.toString().replace('.', ',');
-    } else {
-        textInScreen = (number * -1);
+    } else if (displayScreen.textContent !== '0') {
+        textInScreen = (number * -1).toString();
     }
-    setDisplayResult(textInScreen);
+
 }
 
 function replaceComma(number) {
-    return number.replace(',', '.');
+    return number.toString().replace(',', '.');
 }
 
 function replaceDot(number) {
@@ -146,36 +181,41 @@ function getFirstNumber(operatorBtn) {
 }
 
 function getSecondNumber(operatorBtn) {
+    enablingDigits();
     operator = operatorBtn
     secondNumber = parseFloat(replaceComma(textInScreen));
 
 }
 
 function inputOperator(operatorBtn) {
-    let result;
+    let result = 0;
     if (operator === null) {
         getFirstNumber(operatorBtn);
-
-    } else if (operatorBtn === '=' && operator !== null) {
+    } else if ((operatorBtn === 'Enter' || operatorBtn === '=') && secondNumber !== null && operator !== null) {
         getSecondNumber(operator);
-        result = performingOperation(firstNumber, secondNumber, operator);
-        textInScreen = replaceDot(result);
+        result = performingOperation(Number(firstNumber), Number(secondNumber), operator);
+        firstNumber = result;
+        textInScreen = replaceDot(roundResult(result, 10));
+        setDisplayResult(textInScreen);
     }
-    operator = operatorBtn;
 
+    operator = operatorBtn;
     highlightOperator(operator);
 
-
 }
+
 
 function highlightOperator(operatorBtn) {
     unHighLightOperator();
     for (let i = 0; i < operators.length; i++) {
         if (operators[i].textContent === operatorBtn) {
             operators[i].classList.add("highLightOperator")
+        } else if (operatorBtn === '*') {
+            document.getElementById('button-multi').classList.add("highLightOperator");
         }
 
     }
+    enablingDigits();
 }
 
 function unHighLightOperator() {
@@ -199,16 +239,13 @@ function performingOperation(num1, num2, operatorBtn) {
             result = num1 * num2;
             break;
         case '/':
-            if (num2 === 0) {
-                result = 'ERROR';
-            }
             result = num1 / num2;
             break;
         default:
             break;
 
     }
-    console.log('firstnumber', firstNumber, 'oeprator', operator, 'second', secondNumber, ' result ', result)
+    console.log('firstnumber', firstNumber, 'oeprator', operator, 'second', num2, ' result ', result)
 
     return result;
 }
@@ -217,12 +254,28 @@ function roundResult(result, places) {
     return parseFloat(Math.round(result + 'e' + places) + 'e-' + places);
 }
 
-function resetCalculator() {
+function disablingDigits() {
+    for (let i = 0; i < digitsButtons.length; i++) {
+        digitsButtons[i].classList.add("disablingDigitsButtons");
+        digitsButtons[i].disabled = true;
+    }
+}
 
+function enablingDigits() {
+    for (let i = 0; i < digitsButtons.length; i++) {
+        digitsButtons[i].disabled = false;
+        digitsButtons[i].classList.remove("disablingDigitsButtons");
+
+    }
+}
+
+function resetCalculator() {
     textInScreen = '0';
-    setDisplayResult(textInScreen);
     firstNumber = null;
     secondNumber = null;
     operator = null;
+    document.getElementById('comma-button').disabled = false;
     unHighLightOperator();
+    enablingDigits();
+    setDisplayResult(textInScreen);
 }

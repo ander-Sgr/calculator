@@ -11,23 +11,25 @@
     color: #EC1288;
     background-color: rgb(1, 9, 29);
     border: none;
-    border-radius: 10px;
+    border-radius: 50px;
     margin: 10px;
     font-size: 35px;
 
+
 }
 
-.number {
+.number, .comma {
     border: none;
     background-color: transparent;
-    font-size: 45px;
+    font-size: 35px;
     color: #FFFFFF;
     filter: drop-shadow(5px 5px 5px #03032b);
+    border-radius: 100px;
 }
 
 .number:hover,
-.operator-button:hover {
-    background-color: rgb(12, 13, 15);
+.operator-button:hover, .comma:hover {
+    background-color: rgba(12, 13, 15, 0.486);
     filter: drop-shadow(10px 10px 10px #03032b);
 }
 
@@ -35,6 +37,7 @@
 
 #result-label {
     margin-top: 0px;
+    border-radius: 18px 18px 0px 0px;
     padding-top: 10px;
     grid-column: 1/5;
     background: rgba(43, 53, 73, 1);
@@ -48,10 +51,14 @@
 #container-buttons>div {
     display: grid;
     grid-template-columns: repeat(4, 90px);
-    grid-template-rows: 90px;
+    grid-template-rows:  90px;
     background-color: rgb(33, 41, 56);
     width: 360px;
- 
+}
+
+#fifth{
+    border-radius: 0px 0px 18px 18px;
+
 }
 
 #clear-button {
@@ -72,4 +79,13 @@
 
 .higLightNumbers{
     background-color: rgb(12, 13, 15);
+}
+
+.disablingDigitsButtons{
+    position: relative;
+    left: 10px;
+    background-color: #FFFFFF;
+    width: 70px;
+    height: 70px;
+    color: #03032b;
 }
