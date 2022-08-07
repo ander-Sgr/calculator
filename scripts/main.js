@@ -6,9 +6,10 @@ const plusMinus = document.getElementById('plus-minus-button').textContent;
 let firstNumber = null;
 let secondNumber = null;
 let operator = null;
-let existsPreviusNumber = false;
+let thirdNumber = null;
 let textInScreen = getDisplayResult();
 let arrOperator = ['+', '-', '/', 'x', '*', '=', 'Enter'];
+
 /****events****/
 
 window.addEventListener("keydown", inputKeys);
@@ -22,6 +23,7 @@ function inputKeys(e) {
     } else if (e.key === 'Control') {
         inputPlusMinus(displayScreen.textContent);
     } else {
+
         arrOperator.forEach(iterator => {
             if (iterator === e.key) {
                 inputOperator(e.key);
@@ -29,7 +31,9 @@ function inputKeys(e) {
             }
         });
     }
+    checkLength();
     setDisplayResult(textInScreen);
+
 
 }
 
@@ -39,10 +43,9 @@ function getNumbers() {
             let input = digitsButtons[i].textContent;
             inputDigits(input);
 
-            setDisplayResult(textInScreen);
-
         });
     }
+
 }
 
 function getOperators() {
@@ -61,7 +64,7 @@ function getOperators() {
                     }
                 });
             }
-          
+
         });
     }
 }
@@ -76,12 +79,8 @@ function getDisplayResult() {
 
 function setDisplayResult(input) {
     displayScreen.textContent = input;
-    if (checkLength()) {
-        displayScreen.textContent = input;
-    }
-
-
 }
+
 function checkLength() {
     let canWrite;
 
@@ -105,7 +104,7 @@ function checkLength() {
 
 
 function inputDigits(digit) {
-    if (operator !== null && secondNumber === null && firstNumber !== null) {
+    if (operator !== null && secondNumber === null) {
         if (digit === ',') {
             handleComma();
             textInScreen = '0,';
@@ -124,9 +123,11 @@ function inputDigits(digit) {
             } else {
                 textInScreen += digit;
             }
-
         }
     }
+
+    setDisplayResult(textInScreen);
+
 }
 
 function handleComma() {
@@ -162,17 +163,13 @@ function inputPlusMinus(number) {
 }
 
 function replaceComma(number) {
-    return number.toString().replace(',', '.');
+    let changeComma = number.toString().replace(',', '.');
+    return changeComma;
 }
 
 function replaceDot(number) {
-    let numberToString;
-    numberToString = number.toString();
-    if (typeof (number) === 'number') {
-        numberToString = numberToString.replace('.', ',');
-    }
-    numberToString = numberToString.replace('.', ',');
-    return numberToString;
+    let changeDot = number.toString().replace('.', ',');
+    return changeDot;
 }
 
 function getFirstNumber(operatorBtn) {
@@ -184,7 +181,6 @@ function getSecondNumber(operatorBtn) {
     enablingDigits();
     operator = operatorBtn
     secondNumber = parseFloat(replaceComma(textInScreen));
-
 }
 
 function inputOperator(operatorBtn) {
@@ -192,13 +188,15 @@ function inputOperator(operatorBtn) {
     if (operator === null) {
         getFirstNumber(operatorBtn);
     } else if ((operatorBtn === 'Enter' || operatorBtn === '=') && secondNumber !== null && operator !== null) {
+        enablingDigits();
         getSecondNumber(operator);
         result = performingOperation(Number(firstNumber), Number(secondNumber), operator);
-        firstNumber = result;
         textInScreen = replaceDot(roundResult(result, 10));
-        setDisplayResult(textInScreen);
-    }
 
+
+    }
+    console.log('firstNUmber ', firstNumber, ' second ', secondNumber);
+    setDisplayResult(textInScreen);
     operator = operatorBtn;
     highlightOperator(operator);
 
@@ -206,6 +204,7 @@ function inputOperator(operatorBtn) {
 
 
 function highlightOperator(operatorBtn) {
+
     unHighLightOperator();
     for (let i = 0; i < operators.length; i++) {
         if (operators[i].textContent === operatorBtn) {
@@ -278,4 +277,5 @@ function resetCalculator() {
     unHighLightOperator();
     enablingDigits();
     setDisplayResult(textInScreen);
+
 }

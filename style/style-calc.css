@@ -78,7 +78,10 @@
 }
 
 .higLightNumbers{
-    background-color: rgb(12, 13, 15);
+    background-color: #FFFFFF;
+    width: 70px;
+    height: 70px;
+    color: #03032b;
 }
 
 .disablingDigitsButtons{
