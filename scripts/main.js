@@ -83,18 +83,6 @@ function setDisplayResult(input) {
 
 function checkLength() {
     let canWrite;
-
-<<<<<<< HEAD
-function inputPlusMinus(btnOperator) {
-    let existsSign = resultScreen.textContent.includes('-');
-
-    if ((!existsSign && resultScreen.textContent !== '0' && btnOperator === '+/-')) {
-        if (resultScreen.textContent !== '0,') {
-            resultScreen.textContent = '-'.concat(resultScreen.textContent);
-        }
-    } else if (btnOperator === '+/-') {
-        resultScreen.textContent = resultScreen.textContent.replace('-', '');
-=======
     if (textInScreen.length < 10) {
         canWrite = true;
     } else if (textInScreen.length < 11 && textInScreen.includes(',') && !textInScreen.includes('-')) {
@@ -108,7 +96,6 @@ function inputPlusMinus(btnOperator) {
         canWrite = false;
         disablingDigits();
     }
-
     return canWrite;
 }
 
@@ -148,25 +135,10 @@ function handleComma() {
     } else if (!displayScreen.textContent.includes(',')) {
         highLightComma();
         textInScreen += ',';
->>>>>>> addingJs
     }
     //setDisplayResult(textInScreen);
 }
 
-<<<<<<< HEAD
-function inputOperator(btnOperator) {
-
-    switch (btnOperator) {
-        case 'C':
-            resultScreen.textContent = '0';
-            commaButton.disabled = false;
-            firstNumber = "";
-            secondNumber = "";
-            break;
-        case '+':
-            commaButton.disabled = false;
-            operator = btnOperator;
-=======
 function highLightComma() {
     document.getElementById('comma-button').classList.add("higLightNumbers");
 }
@@ -265,7 +237,6 @@ function performingOperation(num1, num2, operatorBtn) {
             break;
         case '/':
             result = num1 / num2;
->>>>>>> addingJs
             break;
         default:
             break;
@@ -279,8 +250,7 @@ function performingOperation(num1, num2, operatorBtn) {
 function roundResult(result, places) {
     return parseFloat(Math.round(result + 'e' + places) + 'e-' + places);
 }
-<<<<<<< HEAD
-=======
+
 
 function disablingDigits() {
     for (let i = 0; i < digitsButtons.length; i++) {
@@ -308,4 +278,3 @@ function resetCalculator() {
     setDisplayResult(textInScreen);
 
 }
->>>>>>> addingJs
