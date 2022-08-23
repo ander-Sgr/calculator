@@ -168,10 +168,11 @@ function handleOperators(operatorBtn) {
     } else if (operator !== null && secondNumber !== null) {
         secondNumber = convertToInteger(textInScreen);
         result = performingOperation(firstNumber, secondNumber, operator);
-        console.log(typeof result);
         textInScreen = checkResult(result);
-
-    }
+    } 
+   /* if(secondNumber === null && (operator !== null && operator !== '=')){
+        textInScreen = 'ERROR'
+    }*/
 
     console.log('firstnumber', firstNumber, 'oeprator', operator, 'second', secondNumber, ' result ', result)
     operator = operatorBtn;
@@ -180,8 +181,6 @@ function handleOperators(operatorBtn) {
     disablingAllButtons(textInScreen);
 
 }
-
-
 
 function performingOperation(num1, num2, operatorBtn) {
     let result;
@@ -211,20 +210,36 @@ function performingOperation(num1, num2, operatorBtn) {
 }
 
 function checkResult(result) {
+    console.log(typeof result);
     let resultToString
     if (result !== undefined) {
         resultToString = result.toString();
-        if(resultToString.length > 10){
-            resultToString = formatingResult(parseFloat(resultToString));
+        if (resultToString.length > 10 && result % 1 !== 0) {
+            resultToString = result.toPrecision(10);
+            resultToString = formatingResult(resultToString);
         }
-
+        if(resultToString.length > 10 && result % 1 === 0){
+            resultToString = 'ERROR'
+        }
+        
+ 
     }
-
-    return resultToString;
+    return replaceDot(resultToString);
 }
 
-function formatingResult(result) {
-    return result.toPrecision(10);
+function formatingResult(resultToString) {
+    let resultFormated = resultToString;
+    let dotFound = false;
+    for (let i = resultToString.length-1; i >= 0 && !dotFound; i--) {
+        if(resultToString[i] === '0'){
+            resultFormated = resultToString.slice(0, resultFormated.length-1);
+        }
+        if(resultToString[i] === '.'){
+            dotFound = true;
+        }
+        
+    }
+    return resultFormated;
 }
 
 function highlightOperator(operatorBtn) {
