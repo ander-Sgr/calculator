@@ -31,6 +31,7 @@
 .operator-button:hover, .comma:hover {
     background-color: rgba(12, 13, 15, 0.486);
     filter: drop-shadow(10px 10px 10px #03032b);
+
 }
 
 
@@ -75,6 +76,8 @@
 
 .highLightOperator{
     background-color: #FFFFFF;
+    pointer-events: none;
+
 }
 
 .higLightNumbers{
@@ -87,11 +90,14 @@
 .disablingDigitsButtons{
     position: relative;
     left: 10px;
-    background-color: #FFFFFF;
+    background-color: #0a0000;
+    color: #ffffff57;
     width: 70px;
     height: 70px;
-    color: #03032b;
+    pointer-events: none;
+    
 }
+
 
 body{
     background-color:rgb(31, 32, 32)
