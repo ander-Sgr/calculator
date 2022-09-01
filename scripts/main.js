@@ -6,29 +6,30 @@ const PLUS_MIN_BUTTON = document.getElementById('plus-minus-button');
 
 let firstNumber = null;
 let secondNumber = null;
-let operator = null;
+let operator = '';
+let result = 0;
 let textInScreen = getDisplayResult();
 let arrOperator = ['+', '-', '/', 'x', '*', '=', 'Enter'];
 
 /*****events****/
 
-document.addEventListener('keydown', getKeyValues);
-
-function getKeyValues(e) {
+document.addEventListener('keydown', (e) => {
+    //   let keyValue = event.key;
     e.preventDefault();
-    if (e.key >= 0 && e.key <= 9 || e.key === ',') {
-        inputDigit(e.key);
-    } else if (e.key === 'Escape') {
+    if (e.key === 'Escape') {
         resetCalculator();
     } else if (e.key === 'Control') {
         handlePlusMinusButton(textInScreen);
+    } else if (e.key >= 0 && e.key <= 9 || e.key === ',') {
+        inputDigit(e.key);
     }
     arrOperator.forEach(value => {
         if (value === e.key) {
             handleOperators(e.key);
         }
     });
-}
+
+}, false);
 
 function getNumbers() {
     let takeNumber;
@@ -50,7 +51,8 @@ function getOperators() {
                 resetCalculator();
             } else if (inputOperator === PLUS_MIN_BUTTON.textContent) {
                 handlePlusMinusButton(textInScreen);
-            } else {
+            }
+            else {
                 arrOperator.forEach(value => {
                     if (value === inputOperator) {
                         handleOperators(inputOperator);
@@ -67,8 +69,10 @@ getOperators();
 
 /** calculator functions **/
 
+// TODO function for resolve the cutDecimals, and do a triegger for verify if the result is more 10 digist with integers
+
 function getDisplayResult() {
-    return DISPLAY_SCREEN.innerHTML;
+    return DISPLAY_SCREEN.textContent;
 }
 
 function setDisplayResult(input) {
@@ -77,34 +81,38 @@ function setDisplayResult(input) {
 
 function inputDigit(digit) {
     removeInitialHighLight();
-    if (operator !== null && secondNumber === null) {
+    if (operator !== '' && secondNumber === null) {
         getSecondNumber(digit);
     } else if (digit !== ',' && textInScreen === '0') {
         textInScreen = digit;
     } else {
-        if (digit === ',') {
-            handleComma();
-        } else {
-            textInScreen += digit;
+        if (checkLength(textInScreen)) {
+            if (digit === ',') {
+                handleComma();
+            } else {
+                textInScreen += digit;
+            }
         }
+
     }
-    checkLength(textInScreen);
+    initialHighLight();
     setDisplayResult(textInScreen);
 }
 
-function checkLength() {
-    let canWrite;
-    if (textInScreen.length < 10) {
-        canWrite = true;
-    } else if (textInScreen.length < 11 && !textInScreen.includes(',') && textInScreen.includes('.')) {
-        canWrite = true;
-    } else if (textInScreen.length < 11 && textInScreen.includes(',') && !textInScreen.includes('.')) {
-        canWrite = true;
-    } else if (textInScreen.length < 12 && textInScreen.includes(',') && textInScreen.includes('.')) {
-        canWrite = true;
+
+function checkLength(number) {
+    // let canWrite ;
+    if (number.length < 10) {
+        return true;
+    } else if (number.length < 11 && !number.includes(',') && number.includes('-')) {
+        return true;
+    } else if (number.length < 11 && number.includes(',') && !number.includes('-')) {
+        return true;
+    } else if (number.length < 12 && number.includes(',') && number.includes('-')) {
+        return true;
     } else {
-        canWrite = false;
         disablingDigits();
+        return false;
     }
 }
 
@@ -209,20 +217,22 @@ function performingOperation(num1, num2, operatorBtn) {
     return result;
 }
 
+
 function checkResult(result) {
     console.log(typeof result);
     let resultToString
     if (result !== undefined) {
         resultToString = result.toString();
-        if (resultToString.length > 10 && result % 1 !== 0) {
+        if (resultToString.length > 11 && result % 1 !== 0) {
             resultToString = result.toPrecision(10);
             resultToString = formatingResult(resultToString);
         }
-        if(resultToString.length > 10 && result % 1 === 0){
+        if (resultToString.length > 10 && result % 1 === 0) {
             resultToString = 'ERROR'
         }
-        
- 
+
+
+
     }
     return replaceDot(resultToString);
 }
@@ -230,22 +240,23 @@ function checkResult(result) {
 function formatingResult(resultToString) {
     let resultFormated = resultToString;
     let dotFound = false;
-    for (let i = resultToString.length-1; i >= 0 && !dotFound; i--) {
-        if(resultToString[i] === '0'){
-            resultFormated = resultToString.slice(0, resultFormated.length-1);
+    for (let i = resultToString.length - 1; i >= 0 && !dotFound; i--) {
+        if (resultToString[i] === '0') {
+            resultFormated = resultToString.slice(0, i);
         }
-        if(resultToString[i] === '.'){
+        if (resultToString[i] === '.') {
             dotFound = true;
         }
-        
+
     }
     return resultFormated;
 }
 
+
 function highlightOperator(operatorBtn) {
     unHighLightOperator();
     for (let i = 0; i < OPERATORS_BUTTONS.length; i++) {
-        if (OPERATORS_BUTTONS[i].textContent === operatorBtn) {
+        if (OPERATORS_BUTTONS[i].textContent === operatorBtn && OPERATORS_BUTTONS[i].textContent !== '=') {
             OPERATORS_BUTTONS[i].classList.add('highLightOperator');
         }
     }
@@ -262,7 +273,7 @@ function unHighLightOperator() {
 function disablingDigits() {
     for (let i = 0; i < DIGITS_BUTTONS.length; i++) {
         DIGITS_BUTTONS[i].classList.add('disablingDigitsButtons');
-        DIGITS_BUTTONS[i].disabled = true;
+        DIGITS_BUTTONS[i].setAttribute("disabled", true);
     }
 }
 
@@ -274,7 +285,6 @@ function enablingDigits() {
 }
 
 function initialHighLight() {
-
     if (textInScreen == '0') {
         PLUS_MIN_BUTTON.classList.add('disablingDigitsButtons');
         DIGITS_BUTTONS[9].classList.add('disablingDigitsButtons');
@@ -312,7 +322,7 @@ function resetCalculator() {
     textInScreen = '0';
     firstNumber = null;
     secondNumber = null;
-    operator = null;
+    operator = '';
     enablingDigits();
     initialHighLight();
     unHighLightOperator();
@@ -320,12 +330,11 @@ function resetCalculator() {
     setDisplayResult(textInScreen);
 
 }
-
 initialHighLight();
 
 
 /*
-var a = 22 / 7;
+var a = 24.2 + 6.4;
 console.log(typeof a);
 console.log(a.toPrecision(5));
 console.log(typeof a.toPrecision(5));
