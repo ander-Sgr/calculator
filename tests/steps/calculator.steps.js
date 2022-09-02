@@ -7,8 +7,8 @@ Given('a user opens the app',  async function () {
     await page.goto(url);
 });
 
-Then('in the display screen should be show a {string}', function (int) {
-    // Then('in the display screen should be show a {float}', function (float) {
-    // Write code here that turns the phrase above into concrete actions
-    return 'pending';
+Then('in the display screen should be show a {string}', async function (string) {
+    const display = await page.locator('data-testid=display').innerText();
+    expect(display).toBe(string);
+
 });
