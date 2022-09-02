@@ -168,55 +168,6 @@ function getSecondNumber(digit) {
 
 }
 
-function handleOperators(operatorBtn) {
-    let result = 0;
-
-    if (operator === null) {
-        firstNumber = convertToInteger(textInScreen);
-    } else if (operator !== null && secondNumber !== null) {
-        secondNumber = convertToInteger(textInScreen);
-        result = performingOperation(firstNumber, secondNumber, operator);
-        textInScreen = checkResult(result);
-    } 
-   /* if(secondNumber === null && (operator !== null && operator !== '=')){
-        textInScreen = 'ERROR'
-    }*/
-
-    console.log('firstnumber', firstNumber, 'oeprator', operator, 'second', secondNumber, ' result ', result)
-    operator = operatorBtn;
-    setDisplayResult(textInScreen);
-    highlightOperator(operator);
-    disablingAllButtons(textInScreen);
-
-}
-
-function performingOperation(num1, num2, operatorBtn) {
-    let result;
-    switch (operatorBtn) {
-        case '+':
-            result = num1 + num2;
-            break;
-        case '-':
-            result = num1 - num2;
-            break;
-        case '*':
-        case 'x':
-            result = num1 * num2;
-            break;
-        case '/':
-            if (num2 === 0) {
-                return 'ERROR';
-            }
-            result = num1 / num2;
-            break;
-        default:
-            break;
-    }
-    console.log('firstnumber', firstNumber, 'oeprator', operator, 'second', secondNumber, ' result ', result)
-
-    return result;
-}
-
 
 function checkResult(result) {
     console.log(typeof result);
