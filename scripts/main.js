@@ -4,8 +4,8 @@ const OPERATORS_BUTTONS = document.querySelectorAll('.operator-button');
 const PLUS_MIN_BUTTON = document.getElementById('plus-minus-button');
 
 
-let firstNumber = null;
-let secondNumber = null;
+let firstNumber = 0;
+let secondNumber = 0;
 let operator = '';
 let result = 0;
 let textInScreen = getDisplayResult();
@@ -25,7 +25,7 @@ document.addEventListener('keydown', (e) => {
     }
     arrOperator.forEach(value => {
         if (value === e.key) {
-            handleOperators(e.key);
+            handleOperations(e.key);
         }
     });
 
@@ -55,7 +55,7 @@ function getOperators() {
             else {
                 arrOperator.forEach(value => {
                     if (value === inputOperator) {
-                        handleOperators(inputOperator);
+                        handleOperations(inputOperator);
                     }
                 });
             }
@@ -81,8 +81,10 @@ function setDisplayResult(input) {
 
 function inputDigit(digit) {
     removeInitialHighLight();
-    if (operator !== '' && secondNumber === null) {
+    if (operator !== '' && secondNumber === 0) {
         getSecondNumber(digit);
+        unHighLightOperator();
+        unHighLightPlusMinus();
     } else if (digit !== ',' && textInScreen === '0') {
         textInScreen = digit;
     } else {
@@ -93,6 +95,7 @@ function inputDigit(digit) {
                 textInScreen += digit;
             }
         }
+        checkLength(textInScreen);
 
     }
     initialHighLight();
@@ -119,8 +122,10 @@ function checkLength(number) {
 function handleComma() {
     if (textInScreen === '0') {
         textInScreen = '0'.concat(',');
+        highlightComma();
     } else if (!textInScreen.includes(',')) {
         textInScreen = textInScreen.concat(',');
+        highlightComma();
     }
 }
 
@@ -135,10 +140,10 @@ function handlePlusMinusButton(valueInScreen) {
     } else if (textInScreen !== '0') {
         valueInScreen = (valueInScreen * -1).toString();
     }
-
     textInScreen = valueInScreen;
     //highLightPlusMinus(textInScreen);
     setDisplayResult(textInScreen);
+
 }
 
 function replaceDot(value) {
@@ -168,6 +173,76 @@ function getSecondNumber(digit) {
 
 }
 
+function addition() {
+    let result = convertToInteger(firstNumber) + convertToInteger(secondNumber);
+    return result;
+}
+
+function substraction() {
+    let result = convertToInteger(firstNumber) - convertToInteger(secondNumber);
+    return result;
+}
+
+function multiplication() {
+    let result = convertToInteger(firstNumber) * convertToInteger(secondNumber);
+    return result;
+}
+
+function division() {
+    let result = convertToInteger(firstNumber) / convertToInteger(secondNumber);
+    return result;
+}
+
+function performingOperations() {
+    switch (operator) {
+        case '+':
+            result = addition();
+            break;
+        case '-':
+            result = substraction();
+            break;
+        case '*':
+        case 'x':
+            result = multiplication();
+            break;
+        case '/':
+            if (secondNumber === 0) {
+                result = 'ERROR';
+            } else {
+                result = division();
+            }
+            break;
+        default:
+            break;
+    }
+    console.log(firstNumber, '--', secondNumber);
+    return result
+}
+
+function handleOperations(operatorPressed) {
+
+    if (operator === '') {
+        firstNumber = convertToInteger(textInScreen);
+
+        operator = operatorPressed;
+    } else if (operator !== '' && secondNumber !== 0) {
+        secondNumber = convertToInteger(textInScreen);
+        result = performingOperations();
+        textInScreen = checkResult(result);
+        firstNumber = result;
+        operator = operatorPressed;
+        secondNumber = 0;
+    } else {
+        operator = operatorPressed;
+    }
+    console.log(result);
+    console.log(firstNumber, '-', secondNumber);
+    setDisplayResult(textInScreen);
+    highLightPlusMinus();
+    highlightOperator(operator);
+    disablingAllButtons(textInScreen);
+
+}
 
 function checkResult(result) {
     console.log(typeof result);
@@ -181,9 +256,6 @@ function checkResult(result) {
         if (resultToString.length > 10 && result % 1 === 0) {
             resultToString = 'ERROR'
         }
-
-
-
     }
     return replaceDot(resultToString);
 }
@@ -206,18 +278,27 @@ function formatingResult(resultToString) {
 
 function highlightOperator(operatorBtn) {
     unHighLightOperator();
+
     for (let i = 0; i < OPERATORS_BUTTONS.length; i++) {
         if (OPERATORS_BUTTONS[i].textContent === operatorBtn && OPERATORS_BUTTONS[i].textContent !== '=') {
             OPERATORS_BUTTONS[i].classList.add('highLightOperator');
+        } if (operatorBtn === '*') {
+            document.getElementById('button-multi').classList.add("highLightOperator");
+
         }
     }
     enablingDigits();
+  
+
+
 }
 
 function unHighLightOperator() {
     for (let i = 0; i < OPERATORS_BUTTONS.length; i++) {
         OPERATORS_BUTTONS[i].classList.remove('highLightOperator');
     }
+    unHighLightComma();
+    // 
 
 }
 
@@ -230,7 +311,7 @@ function disablingDigits() {
 
 function enablingDigits() {
     for (let i = 0; i < DIGITS_BUTTONS.length; i++) {
-        DIGITS_BUTTONS[i].disabled = false;
+        DIGITS_BUTTONS[i].removeAttribute("disabled");
         DIGITS_BUTTONS[i].classList.remove('disablingDigitsButtons');
     }
 }
@@ -253,11 +334,11 @@ function disablingAllButtons(result) {
         for (let i = 0; i < OPERATORS_BUTTONS.length; i++) {
             if (OPERATORS_BUTTONS[i].textContent !== 'C') {
                 OPERATORS_BUTTONS[i].classList.add('highLightOperator');
-                OPERATORS_BUTTONS[i].disabled = true;
+                OPERATORS_BUTTONS[i].setAttribute("disabled", true);
             }
         }
         btnEqual.classList.add('highLightOperator');
-        btnEqual.disabled = true;
+        btnEqual.setAttribute("disabled", true);
         disablingDigits();
     }
 }
@@ -269,15 +350,41 @@ function enablingOperator() {
     }
 }
 
+function highLightPlusMinus() {
+    PLUS_MIN_BUTTON.classList.add('disablingDigitsButtons');
+    PLUS_MIN_BUTTON.setAttribute("disabled", true);
+}
+
+function unHighLightPlusMinus() {
+    PLUS_MIN_BUTTON.disabled = false;
+    PLUS_MIN_BUTTON.removeAttribute("disabled");
+}
+
+
+function highlightComma() {
+    let getComma = document.getElementById("comma-button");
+    getComma.classList.add("higLightNumbers");
+    getComma.setAttribute("disabled", true);
+}
+
+function unHighLightComma() {
+    let getComma = document.getElementById("comma-button");
+    getComma.classList.remove("higLightNumbers");
+    getComma.removeAttribute("disabled");
+}
+
+
 function resetCalculator() {
     textInScreen = '0';
-    firstNumber = null;
-    secondNumber = null;
+    firstNumber = 0;
+    secondNumber = 0;
     operator = '';
+    result = 0;
     enablingDigits();
     initialHighLight();
     unHighLightOperator();
     enablingOperator();
+    unHighLightComma();
     setDisplayResult(textInScreen);
 
 }
@@ -290,3 +397,4 @@ console.log(typeof a);
 console.log(a.toPrecision(5));
 console.log(typeof a.toPrecision(5));
 */
+
