@@ -75,12 +75,14 @@
 }
 
 .highLightOperator{
+    pointer-events: none;
     background-color: #FFFFFF;
     pointer-events: none;
 
 }
 
 .higLightNumbers{
+    /*pointer-events: none;*/
     background-color: #FFFFFF;
     width: 70px;
     height: 70px;
@@ -94,7 +96,8 @@
     color: #ffffff57;
     width: 70px;
     height: 70px;
-    pointer-events: none;
+
+
     
 }
 
