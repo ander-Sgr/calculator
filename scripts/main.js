@@ -81,8 +81,10 @@ function setDisplayResult(input) {
 
 function inputDigit(digit) {
     removeInitialHighLight();
+
     if (operator !== '' && secondNumber === 0) {
         getSecondNumber(digit);
+
         unHighLightOperator();
         unHighLightPlusMinus();
     } else if (digit !== ',' && textInScreen === '0') {
@@ -238,6 +240,7 @@ function handleOperations(operatorPressed) {
     console.log(result);
     console.log(firstNumber, '-', secondNumber);
     setDisplayResult(textInScreen);
+    highlightComma();
     highLightPlusMinus();
     highlightOperator(operator);
     disablingAllButtons(textInScreen);
@@ -288,7 +291,7 @@ function highlightOperator(operatorBtn) {
         }
     }
     enablingDigits();
-  
+
 
 
 }
@@ -297,7 +300,7 @@ function unHighLightOperator() {
     for (let i = 0; i < OPERATORS_BUTTONS.length; i++) {
         OPERATORS_BUTTONS[i].classList.remove('highLightOperator');
     }
-    unHighLightComma();
+   // unHighLightComma();
     // 
 
 }
@@ -318,14 +321,18 @@ function enablingDigits() {
 
 function initialHighLight() {
     if (textInScreen == '0') {
-        PLUS_MIN_BUTTON.classList.add('disablingDigitsButtons');
+        highLightPlusMinus();
+
         DIGITS_BUTTONS[9].classList.add('disablingDigitsButtons');
+        DIGITS_BUTTONS[9].setAttribute("disabled", true);
+
     }
 }
 
 function removeInitialHighLight() {
-    PLUS_MIN_BUTTON.classList.remove('disablingDigitsButtons');
+    unHighLightPlusMinus();
     DIGITS_BUTTONS[9].classList.remove('disablingDigitsButtons');
+    DIGITS_BUTTONS[9].removeAttribute("disabled");
 }
 
 function disablingAllButtons(result) {
@@ -345,18 +352,21 @@ function disablingAllButtons(result) {
 
 function enablingOperator() {
     for (let i = 0; i < OPERATORS_BUTTONS.length; i++) {
-        OPERATORS_BUTTONS[i].disabled = false;
+        if (OPERATORS_BUTTONS[i].textContent !== PLUS_MIN_BUTTON.textContent) {
+            OPERATORS_BUTTONS[i].removeAttribute("disabled");
+        }
+
 
     }
 }
 
 function highLightPlusMinus() {
-    PLUS_MIN_BUTTON.classList.add('disablingDigitsButtons');
     PLUS_MIN_BUTTON.setAttribute("disabled", true);
+    PLUS_MIN_BUTTON.classList.add('disablingDigitsButtons');
 }
 
 function unHighLightPlusMinus() {
-    PLUS_MIN_BUTTON.disabled = false;
+    PLUS_MIN_BUTTON.classList.remove('disablingDigitsButtons');
     PLUS_MIN_BUTTON.removeAttribute("disabled");
 }
 
@@ -380,8 +390,10 @@ function resetCalculator() {
     secondNumber = 0;
     operator = '';
     result = 0;
+
     enablingDigits();
     initialHighLight();
+    highLightPlusMinus();
     unHighLightOperator();
     enablingOperator();
     unHighLightComma();
