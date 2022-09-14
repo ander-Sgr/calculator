@@ -5,6 +5,7 @@
   "main": "scripts/main.js",
   "devDependencies": {
     "@cucumber/cucumber": "^8.5.2",
+    "@cucumber/pretty-formatter": "^1.0.0",
     "@playwright/test": "^1.25.1",
     "playwright": "^1.25.1"
   },
